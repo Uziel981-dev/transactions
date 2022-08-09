@@ -19,9 +19,16 @@ python main.py
 ```
 
 ## Probar proyecto en un contenedor docker (Recomendado)
-Con el engine de docker instalado, ejecutar:
+Con el engine de docker instalado, ejecutar a nivel de proyecto python:
 ```
 docker build -t test_stori .
 docker run -it --rm --name test_stori test_stori
 ```
 Nota: Puede ser necesario permisos de administrador (sudo)
+
+## Docker database: postgresql
+
+```
+docker pull postgres:latest
+sudo docker run -p 5432:5432 -e POSTGRES_PASSWORD=password postgres
+```
