@@ -1,6 +1,7 @@
 import csv
 import os
 from datetime import datetime
+from typing import NoReturn, Any
 
 import psycopg2
 from dotenv import load_dotenv
@@ -15,7 +16,7 @@ database = os.getenv("database_db")
 global connection, cursor
 
 
-def test_connection():
+def test_connection() -> NoReturn:
     global connection, cursor
     try:
         # Connect to an existing database
@@ -47,7 +48,7 @@ def test_connection():
 
 # test_connection()
 
-def create_table():
+def create_table() -> NoReturn:
     global connection, cursor
     try:
         connection = psycopg2.connect(user=user,
@@ -79,7 +80,7 @@ def create_table():
 
 # create_table()
 
-def insert_row(table, name_columns, values):
+def insert_row(table, name_columns, values) -> NoReturn:
     global connection, cursor
     try:
         connection = psycopg2.connect(user=user,
@@ -110,7 +111,7 @@ def insert_row(table, name_columns, values):
 
 #   insert_row("transactions", "ID, DATE, TRANSACTION, CLIENT", "1, '01/01/22', 1641.24, 000001")
 
-def insert_data(table, file_transactions):
+def insert_data(table, file_transactions) -> NoReturn:
     with open(file_transactions) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         next(csv_reader, None)
@@ -128,9 +129,9 @@ def insert_data(table, file_transactions):
                 print("Error to insert row: {}".format(values), error)
 
 
-# insert_data("../transactions.csv")
+# insert_data("transactions", "../transactions.csv")
 
-def read_table(table):
+def read_table(table) -> list[tuple[Any, ...]]:
     global connection, cursor
     try:
         connection = psycopg2.connect(user=user,
@@ -141,6 +142,7 @@ def read_table(table):
         cursor = connection.cursor()
         cursor.execute("SELECT * from {}".format(table))
         record = cursor.fetchall()
+        type(record)
         return record
     except (Exception, psycopg2.Error) as error:
         print("Error to read table", error)
@@ -149,3 +151,6 @@ def read_table(table):
             cursor.close()
             connection.close()
             print("PostgreSQL connection is closed")
+
+
+print(read_table("transactions"))

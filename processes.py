@@ -1,6 +1,7 @@
-import csv
 from datetime import datetime
 from typing import List, Tuple
+
+from utils.database import read_table
 
 
 class CalculateTransactions:
@@ -14,19 +15,17 @@ class CalculateTransactions:
     def __init__(self, file_transactions: str):
         self.file_transactions = file_transactions
 
-    def read_csv(self) -> Tuple[List[datetime], List[float]]:
+    def read_table(self) -> Tuple[List[datetime], List[float]]:
         dates_transactions = list()
         amounts_transactions = list()
-        with open(self.file_transactions) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            next(csv_reader, None)
-            for transaction in csv_reader:
-                dates_transactions.append(datetime.strptime(transaction[1], "%d/%m/%y"))
-                amounts_transactions.append(float(transaction[2]))
+        database_records = read_table("transactions")
+        for row in database_records:
+            dates_transactions.append(datetime.strptime(row[1][:10], "%Y-%m-%d"))
+            amounts_transactions.append(row[2])
         return dates_transactions, amounts_transactions
 
     def calculator(self) -> Tuple[float, List[int], List[float], List[float]]:
-        dates_transactions, amounts_transactions = self.read_csv()
+        dates_transactions, amounts_transactions = self.read_table()
         total = 0
         monthly_transactions = [int(0) for _ in range(12)]
         list_credit_amount = list()

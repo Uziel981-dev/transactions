@@ -4,6 +4,7 @@ import ssl
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import NoReturn
 
 from dotenv import load_dotenv
 from prettytable import PrettyTable
@@ -33,7 +34,7 @@ class Email:
         self.list_credit_amount = list_credit_amount
         self.list_debit_amount = list_debit_amount
 
-    def create_table(self):
+    def create_table(self) -> str:
         tabular_fields = ["Mes", "Número de operaciones"]
         tabular_table = PrettyTable()
         tabular_table.field_names = tabular_fields
@@ -42,7 +43,7 @@ class Email:
                 tabular_table.add_row([month_year[i], self.monthly_transactions[i]])
         return tabular_table.get_html_string()
 
-    def create_html(self):
+    def create_html(self) -> str:
         table = self.create_table()
 
         data_text = """<br><br>Balance total: {}\
@@ -68,14 +69,14 @@ class Email:
                  "<body>" \
                  "<p>Este es tu resumen de movimientos, no dudes en contactarnos para cualquier aclaración<br>" \
                + "{}<br>".format(data_text) \
-               + "Visitanos: <a href=\"https://www.storicard.com/\">www.storicard.com</a><br>" \
                + "{}".format(table) \
                + "</p>" \
+               + "Visitanos: <a href=\"https://www.storicard.com/\">www.storicard.com</a><br>" \
                  "</body>" \
                  "</html>"
         return html
 
-    def send_mail(self):
+    def send_mail(self) -> NoReturn:
         html = self.create_html()
         load_dotenv()
         ctx = ssl.create_default_context()

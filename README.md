@@ -22,9 +22,12 @@ python main.py
 Con el engine de docker instalado, ejecutar a nivel de proyecto python:
 ```
 docker build -t test_stori .
-docker run -it --rm --name test_stori test_stori
+docker run -it -p 5432:5432 --rm --name test_stori test_stori
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' 0447aabb8d22
 ```
 Nota: Puede ser necesario permisos de administrador (sudo)
+El ultimo comando sirve para obtener la ip del contenedor de la BD, necesario
+para llegar al contenedor de postgres desde el contenedor Python
 
 ## Docker database: postgresql
 
